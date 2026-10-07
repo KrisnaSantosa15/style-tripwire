@@ -2,9 +2,21 @@
 
 **Your house style, enforced on Claude before the code lands.**
 
-You told Claude "no em dashes". Twice. It wrote one anyway.
+[![Claude Code mod](https://img.shields.io/badge/Claude%20Code-mod-D97757?logo=claude&logoColor=white)](https://github.com/karanb192/awesome-claude-code-mods) [![Claude Code 2.1.287+](https://img.shields.io/badge/Claude%20Code-2.1.287%2B-D97757)](https://code.claude.com) [![GitHub stars](https://img.shields.io/github/stars/KrisnaSantosa15/style-tripwire?style=flat&color=yellow)](https://github.com/KrisnaSantosa15/style-tripwire/stargazers) [![Last commit](https://img.shields.io/github/last-commit/KrisnaSantosa15/style-tripwire?color=green)](https://github.com/KrisnaSantosa15/style-tripwire/commits) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-style-tripwire turns those rules into regex tripwires. When Claude's edit or commit message breaks one, the call is stopped and Claude gets told why, so it fixes the line itself.
+## The Problem
+
+You told Claude "no em dashes". Twice. It wrote one anyway. Then it left a `dd()` in a PHP file and a TODO in the commit you were about to push.
+
+Style rules in `CLAUDE.md` are suggestions. Claude reads them, means well, and forgets them twenty tool calls later. You catch it in review, ask for a fix, and the cycle repeats.
+
+### How style-tripwire Solves It
+
+It turns each rule into a regex tripwire on Claude's own tool calls:
+
+1. **Block**: an edit or commit message that breaks a rule never lands. Claude gets the reason and fixes the line itself.
+2. **Warn**: softer rules let the change through and tell Claude what to clean up.
+3. **Only new lines**: existing code never trips it, so it works on legacy codebases from day one.
 
 ```
 style-tripwire: this change trips the house style rules. Fix it and try again.
@@ -14,13 +26,18 @@ style-tripwire: this change trips the house style rules. Fix it and try again.
 
 ## Install
 
-```
-/plugin install style-tripwire --marketplace KrisnaSantosa15/style-tripwire
+**Prerequisites:** Claude Code 2.1.287 or later (`claude --version`).
+
+```bash
+/plugin marketplace add KrisnaSantosa15/style-tripwire
+/plugin install style-tripwire@style-tripwire
 ```
 
-Needs Claude Code 2.1.287 or later.
+Then add your rules (below). They're read on every call, so no restart is needed.
 
-## Set your rules
+**Verify:** add the `no-em-dash` rule from the example, then ask Claude to write a sentence with an em dash into a file. The write is refused.
+
+## Set Your Rules
 
 Put rules in `.claude/style-tripwire.json` for one project, or `~/.claude/style-tripwire.json` for all of them. Both are read, so you can mix them.
 
@@ -59,11 +76,9 @@ Put rules in `.claude/style-tripwire.json` for one project, or `~/.claude/style-
 | `commits` | `true` to also check `git commit` commands. |
 | `action` | `"block"` (default) stops the call. `"warn"` lets it through and tells Claude. |
 
-Rules are read on every call, so edits take effect right away.
+## What It Checks
 
-## What it checks
-
-- **Edit**: only the lines Claude adds, so old code never trips it.
+- **Edit**: only the lines Claude adds.
 - **Write**: only lines that weren't in the file already.
 - **Bash**: `git commit` commands, against rules with `"commits": true`.
 
@@ -71,12 +86,17 @@ One rule is on out of the box: no merge conflict markers. Set `"defaults": false
 
 A broken config file or an invalid pattern gets you a toast, and the call goes through unchecked. The tripwire never blocks your work over its own bug.
 
-## Develop
+## Contributing
 
-```sh
-claude plugin validate .
-claude plugin test .
-claude --plugin-dir .
+Issues and pull requests are welcome. Add a test for any behavior you change.
+
+```bash
+git clone https://github.com/KrisnaSantosa15/style-tripwire.git
+cd style-tripwire && claude plugin validate . && claude plugin test .
 ```
 
-MIT licensed.
+Try your changes live with `claude --plugin-dir .`.
+
+## License
+
+[MIT](LICENSE). Use it, fork it, ship it.
