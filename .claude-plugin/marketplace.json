@@ -1,0 +1,6 @@
+{
+  "name": "style-tripwire",
+  "description": "Regex tripwires for Claude Code edits and commit messages.",
+  "owner": { "name": "Krisna Santosa" },
+  "plugins": [{ "name": "style-tripwire", "source": "./" }]
+}
