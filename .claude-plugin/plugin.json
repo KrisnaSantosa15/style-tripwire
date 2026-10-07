@@ -1,0 +1,7 @@
+{
+  "name": "style-tripwire",
+  "version": "0.1.0",
+  "description": "Your house style as regex tripwires: Claude's edits and commit messages that break a rule are blocked or flagged before they land.",
+  "author": { "name": "Krisna Santosa" },
+  "license": "MIT"
+}
